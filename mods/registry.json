@@ -1,0 +1,105 @@
+{
+  "$schema": "./registry.schema.json",
+  "version": 1,
+  "mods": [
+    {
+      "id": "statusline-pro",
+      "name": "Statusline Pro",
+      "category": "statusline",
+      "summary": "Rich status line: model, directory, git branch, live token burn, session cost and a context-pressure bar.",
+      "risk": "none",
+      "install": [
+        { "type": "copy", "from": "statusline/statusline.js", "to": "dashboard/mods/statusline.js", "mode": 493 },
+        { "type": "settings", "path": "statusLine", "value": { "type": "command", "command": "node \"{{HOME}}/dashboard/mods/statusline.js\"", "padding": 0 } }
+      ]
+    },
+    {
+      "id": "event-logger",
+      "name": "Event Logger",
+      "category": "observability",
+      "summary": "Records every hook event to dashboard/events.jsonl. Required for the dashboard's Live Monitor.",
+      "risk": "none",
+      "install": [
+        { "type": "copy", "from": "hooks/_hooklib.js", "to": "dashboard/mods/_hooklib.js" },
+        { "type": "copy", "from": "hooks/event-logger.js", "to": "dashboard/mods/event-logger.js", "mode": 493 },
+        { "type": "hook", "event": "PreToolUse", "matcher": "*", "command": "node \"{{HOME}}/dashboard/mods/event-logger.js\"" },
+        { "type": "hook", "event": "PostToolUse", "matcher": "*", "command": "node \"{{HOME}}/dashboard/mods/event-logger.js\"" },
+        { "type": "hook", "event": "UserPromptSubmit", "command": "node \"{{HOME}}/dashboard/mods/event-logger.js\"" },
+        { "type": "hook", "event": "SessionStart", "command": "node \"{{HOME}}/dashboard/mods/event-logger.js\"" },
+        { "type": "hook", "event": "Stop", "command": "node \"{{HOME}}/dashboard/mods/event-logger.js\"" }
+      ]
+    },
+    {
+      "id": "guard-bash",
+      "name": "Bash Guard",
+      "category": "safety",
+      "summary": "Blocks a short list of destructive shell commands and asks for confirmation on risky ones (force push, hard reset, sudo, kubectl delete).",
+      "risk": "low",
+      "install": [
+        { "type": "copy", "from": "hooks/_hooklib.js", "to": "dashboard/mods/_hooklib.js" },
+        { "type": "copy", "from": "hooks/guard-bash.js", "to": "dashboard/mods/guard-bash.js", "mode": 493 },
+        { "type": "hook", "event": "PreToolUse", "matcher": "Bash", "command": "node \"{{HOME}}/dashboard/mods/guard-bash.js\"" }
+      ]
+    },
+    {
+      "id": "protect-secrets",
+      "name": "Secret Shield",
+      "category": "safety",
+      "summary": "Stops .env files, SSH keys, cloud credentials and certificates from being read into the transcript. Example files stay readable.",
+      "risk": "low",
+      "install": [
+        { "type": "copy", "from": "hooks/_hooklib.js", "to": "dashboard/mods/_hooklib.js" },
+        { "type": "copy", "from": "hooks/protect-secrets.js", "to": "dashboard/mods/protect-secrets.js", "mode": 493 },
+        { "type": "hook", "event": "PreToolUse", "matcher": "Read|Edit|Write|MultiEdit|NotebookEdit", "command": "node \"{{HOME}}/dashboard/mods/protect-secrets.js\"" }
+      ]
+    },
+    {
+      "id": "auto-format",
+      "name": "Auto Format",
+      "category": "workflow",
+      "summary": "Runs the project's existing formatter (prettier, ruff, black, gofmt, rustfmt, shfmt) on any file Claude edits. Does nothing if no formatter is installed.",
+      "risk": "medium",
+      "install": [
+        { "type": "copy", "from": "hooks/_hooklib.js", "to": "dashboard/mods/_hooklib.js" },
+        { "type": "copy", "from": "hooks/auto-format.js", "to": "dashboard/mods/auto-format.js", "mode": 493 },
+        { "type": "hook", "event": "PostToolUse", "matcher": "Edit|Write|MultiEdit", "command": "node \"{{HOME}}/dashboard/mods/auto-format.js\"" }
+      ]
+    },
+    {
+      "id": "notify",
+      "name": "Desktop Notifications",
+      "category": "workflow",
+      "summary": "Native desktop notification when Claude finishes a turn or needs input. Works on macOS, Linux (notify-send) and Windows.",
+      "risk": "none",
+      "install": [
+        { "type": "copy", "from": "hooks/_hooklib.js", "to": "dashboard/mods/_hooklib.js" },
+        { "type": "copy", "from": "hooks/notify.js", "to": "dashboard/mods/notify.js", "mode": 493 },
+        { "type": "hook", "event": "Stop", "command": "node \"{{HOME}}/dashboard/mods/notify.js\"" },
+        { "type": "hook", "event": "Notification", "command": "node \"{{HOME}}/dashboard/mods/notify.js\"" }
+      ]
+    },
+    {
+      "id": "commands",
+      "name": "Dashboard Slash Commands",
+      "category": "commands",
+      "summary": "Adds /dashboard, /cost-report, /session-summary and /mods to Claude Code.",
+      "risk": "none",
+      "install": [
+        { "type": "copy", "from": "commands/dashboard.md", "to": "commands/dashboard.md" },
+        { "type": "copy", "from": "commands/cost-report.md", "to": "commands/cost-report.md" },
+        { "type": "copy", "from": "commands/session-summary.md", "to": "commands/session-summary.md" },
+        { "type": "copy", "from": "commands/mods.md", "to": "commands/mods.md" }
+      ]
+    },
+    {
+      "id": "analyst-agent",
+      "name": "Usage Analyst Subagent",
+      "category": "agents",
+      "summary": "A dashboard-analyst subagent that reads the dashboard API and explains your usage, cost drivers and cache efficiency.",
+      "risk": "none",
+      "install": [
+        { "type": "copy", "from": "agents/dashboard-analyst.md", "to": "agents/dashboard-analyst.md" }
+      ]
+    }
+  ]
+}

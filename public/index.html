@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="Local analytics, session explorer and mod manager for Claude Code.">
+  <meta name="robots" content="noindex">
+  <title>Claude Dashboard</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <noscript>
+    <div style="padding:40px;font-family:system-ui">
+      <h1>JavaScript is required</h1>
+      <p>This dashboard renders its charts and tables in the browser. The underlying data is also available
+         as JSON at <code>/api/overview</code> and as CSV at <code>/api/export?format=csv</code>.</p>
+    </div>
+  </noscript>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

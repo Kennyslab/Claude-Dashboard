@@ -1,0 +1,19 @@
+{
+  "name": "claude-dashboard",
+  "version": "1.0.0",
+  "description": "A professional, zero-dependency analytics dashboard, session explorer and mod manager for Claude Code.",
+  "keywords": ["claude", "claude-code", "dashboard", "analytics", "anthropic", "cli", "tui", "observability"],
+  "license": "MIT",
+  "type": "module",
+  "engines": { "node": ">=18.0.0" },
+  "bin": { "claude-dashboard": "bin/claude-dashboard.js" },
+  "main": "src/server.js",
+  "files": ["bin", "src", "public", "mods", "docs", "README.md", "LICENSE"],
+  "scripts": {
+    "start": "node bin/claude-dashboard.js",
+    "dev": "node bin/claude-dashboard.js --port 7878 --no-open",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
